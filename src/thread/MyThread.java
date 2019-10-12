@@ -2,15 +2,34 @@ package thread;
 
 public class MyThread extends Thread {
 
-	//用了父类的run方法
-	public void run() {
-		super.run();
-		System.out.println("This Is MyThread");
+	private String name;
+	
+	
+	public MyThread () {
+		
 	}
+	
+	public MyThread (String name) {
+		super(name);
+		this.name = name;
+	}
+	
+	
+	//重写父类的run方法
+	public void run()
+	{
+		System.out.println(name);
+	}
+	
+	
+	
 
 	static void test01() {
-		MyThread mythread = new MyThread();
+		MyThread mythread = new MyThread("A");
 		mythread.start();
+		
+		
+		
 		System.out.println("运行结束");
 	}
 

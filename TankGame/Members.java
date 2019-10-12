@@ -13,7 +13,7 @@ class Tanks{
     // 坦克的方向 0 表示向上 1 表示向右 2 表示 下 3 表示左
     private int direct = 0;
     // 设置坦克的速度
-    int speed = 5;
+    int speed = 3;
     // 坦克的颜色
     private int color;
     public Tanks(int x, int y){
@@ -76,7 +76,7 @@ class EneMyTank extends Tanks implements Runnable{
 
 
 
-    // 判断是否碰到别的坦克
+    // 判断是否碰到别的坦克    含自己的tank吗？？？+++++++++++++++++++++++++++++++++++
     private boolean isTouchOther(){
         boolean isTouch=false;//为什么放在isTouchOther方法里？？？？？是不是造成重叠不动的原因？？？并没有+++++++++++++++++++++++++++++++++
         switch (this.getDirect()){
@@ -228,7 +228,7 @@ class EneMyTank extends Tanks implements Runnable{
     public void run() {
         while (true){
             // 让敌人的坦克可以移动, 每隔一段时间修改敌人的坐标
-            // 根据敌人的方向来决定敌人如何移动, 方向有随机的变化
+            // 根据敌人的方向来决定敌人如何移动, 方向有随机的变化       别处有随即换方向的代码？？？++++++++++++++++++++++++++++++++++
             switch (this.getDirect()){
                 case 0:
                     // 敌人的方向向上 y 轴减小
@@ -345,7 +345,7 @@ class MyTank extends Tanks{
 
             case 0:
                 // 子弹向上
-                shot = new Shot(x+10, y, 0);
+                shot = new Shot(x+10, y, 0);   //为什么x+10???+++++++++++++
                 // 将子弹放到集合中
                 shots.add(shot);
                 break;
@@ -381,7 +381,7 @@ class MyTank extends Tanks{
     }
     // 控制坦克向右移动, 向右移动 应该是 x 轴的值 加大
     public void moveRight(){
-        this.x-=this.speed;
+        this.x+=this.speed;
 
     }
     // 控制坦克向下移动 向下移动 应该是 y 轴的值 加大
@@ -390,19 +390,16 @@ class MyTank extends Tanks{
     }
     // 控制坦克向左移动, 向左移动应该是 x 轴 减小
     public void moveLeft(){
-        this.x+= this.speed;
+        this.x-= this.speed;
     }
 }
 
 class Shot implements Runnable{
     // 子弹的坐标, 方向, 速度
     int x;
-
-
-
     int y;
     private int direct;
-    private int speed=1;
+    private int speed=3;
     // 子弹是否已经销毁, 子弹打到边缘位置，或者是打到敌人子弹时就要对子弹进行销毁处理
     boolean isLive=true;
     public Shot(int x, int y, int direct){
@@ -464,7 +461,7 @@ class Bomb{
     int x;
     int y;
     // 炸弹的生命
-    int life = 9;
+    int life = 9;     //?????????????????????
     boolean isLive = true;
     public Bomb(int x, int y){
         this.x = x;

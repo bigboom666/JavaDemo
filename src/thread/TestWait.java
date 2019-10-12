@@ -12,8 +12,15 @@ public class TestWait implements Runnable {
         this.self = self;   
     }   
   
+    
+    private TestWait(String name) {   
+        this.name = name;   
+    }   
+    
+    
     @Override  
     public void run() {   
+    	
         int count = 10;   
         while (count > 0) {   
             synchronized (prev) 
@@ -33,14 +40,14 @@ public class TestWait implements Runnable {
                     e.printStackTrace();   
                 }   
             }   
-  
-        }   
+        }  
+       
+        
     }   
 
 
-    
 	static void test01() throws Exception {
-		 Object a = new Object();   
+		    Object a = new Object();   
 	        Object b = new Object();   
 	        Object c = new Object();   
 	        TestWait pa = new TestWait("A", c, a);   

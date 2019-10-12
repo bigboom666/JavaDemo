@@ -1,172 +1,358 @@
 import java.io.*;
+import java.text.MessageFormat;
 
 public class TestIO {
-	
-    public static void main(String[] args) throws IOException {
-        // 控制台  BufferedReader
-        //test01();
-        //test02();
-        //test03();
-    	//二进制文件  
-        //test04();
-        //test05();
-    	//文本写入和读取  write() 方法和 append()
-    	//test06();
-    	//test07();
-    	//test08();
-    	//test09();
-    	//文本写入和读取 InputStreamReader 和 OutputStreamWriter       文件不存在会自动创建
-    	test10();
-    	test11();
+
+    public static void main(String[] args) throws Exception {
+
+        testSerialize();
+
+
     }
 
-    public static void test01() throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("请输入一个字符");
-        char c;
-        c = (char) bufferedReader.read();
-        System.out.println("你输入的字符为"+c);
-    }
-
-    public static void test02() throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("请输入一个字符，按 q 键结束");
-        char c;
-        do {
-            c = (char) bufferedReader.read();
-            System.out.println("你输入的字符为"+c);
-        } while (c != 'q');
-    }
-
-    public static void test03() throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("请输入一行字符");
-        String str = bufferedReader.readLine();
-        System.out.println("你输入的字符为" + str);
-    }
-
-
-    public static void test04() throws IOException {
-        byte[] bytes = {12,21,34,11,21};
-        createFile(new File("").getAbsolutePath()+"/io/test.txt") ;
-        FileOutputStream fileOutputStream = new FileOutputStream(new File("").getAbsolutePath()+"/io/test.txt");
-        // 写入二进制文件，直接打开会出现乱码
-        fileOutputStream.write(bytes);
-        fileOutputStream.close();
-    }
-
-
-    public static void test05() throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(new File("").getAbsolutePath()+"/io/test.txt");
-        int c;
-        // 读取写入的二进制文件，输出字节数组
-        while ((c = fileInputStream.read()) != -1) {
-            System.out.print(c);
-        }
-    }
-    
-    
-
-    public static void test06() throws IOException {
-        FileWriter fileWriter = new FileWriter(new File("").getAbsolutePath()+"/io/test.txt");
-        fileWriter.write("Hello，world！\n欢迎来到 java 世界\n");
-        fileWriter.write("不会覆盖文件原本的内容\n");
-//        fileWriter.write(null); 不能直接写入 null
-        fileWriter.append("并不是追加一行内容，不要被方法名迷惑\n");
-        fileWriter.append(null);
-        fileWriter.flush();
-        System.out.println("文件的默认编码为" + fileWriter.getEncoding());
-        fileWriter.close();
-    }
-
-
-    public static void test07() throws IOException {
-        FileWriter fileWriter = new FileWriter(new File("").getAbsolutePath()+"/io/test.txt", false); // 关闭追加模式，变为覆盖模式
-        fileWriter.write("Hello，world！欢迎来到 java 世界\n");
-        fileWriter.write("我来覆盖文件原本的内容");
-        fileWriter.append("我是下一行");
-        fileWriter.flush();
-        System.out.println("文件的默认编码为" + fileWriter.getEncoding());
-        fileWriter.close();
-    }
-
-
-    public static void test08() throws IOException {
-        FileReader fileReader = new FileReader(new File("").getAbsolutePath()+"/io/test.txt");
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        String str;
-        while ((str = bufferedReader.readLine()) != null) {
-            System.out.println(str);
-        }
-        fileReader.close();
-        bufferedReader.close();
-    }
-
-    public static void test09() throws IOException {
-        FileReader fileReader = new FileReader(new File("").getAbsolutePath()+"/io/test.txt");
-        int c;
-        while ((c = fileReader.read()) != -1) {
-            System.out.print((char) c);
-        }
-    }
-
-    
-//文件不存在会自动创建
-    public static void test10() throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(new File("").getAbsolutePath()+"/io/test2.txt");
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, "GBK"); // 使用 GBK 编码文件
-        outputStreamWriter.write("Hello，world！\n欢迎来到 java 世界\n");
-        outputStreamWriter.append("另外一行内容");
-        outputStreamWriter.flush();
-        System.out.println("文件的编码为" + outputStreamWriter.getEncoding());
-        outputStreamWriter.close();
-        fileOutputStream.close();
-    }
-
-    public static void test11() throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(new File("").getAbsolutePath()+"/io/test2.txt");
-        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "GBK"); // 使用 GBK 解码文件
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        String str;
-        while ((str = bufferedReader.readLine()) != null) {
-            System.out.println(str);
-        }
-        bufferedReader.close();
-        inputStreamReader.close();
-    }
-
-    
-    
-    
-    
-//创建文件
-      static boolean createFile(String destFileName) {
-        File file = new File(destFileName);
-        //判断目标文件所在的目录是否存在
-        if(!file.getParentFile().exists()) {
-            //如果目标文件所在的目录不存在，则创建父目录
-            System.out.println("目标文件所在目录不存在，准备创建它！");
-            if(!file.getParentFile().mkdirs()) {
-                System.out.println("创建目标文件所在目录失败！");
-                return false;
-            }
-        }
-        //创建目标文件
+    //文件 字节流  FileInputStream FileOutputStream
+    public static void test01() throws FileNotFoundException {
+        FileInputStream fileInputStream = null;
+        FileOutputStream fileOutputStream = null;
         try {
-            if (file.createNewFile()) {
-                System.out.println("创建单个文件" + destFileName + "成功！");
-                return true;
-            } else {
-                System.out.println("创建单个文件" + destFileName + "失败！");
-                return false;
+            //创建字节输入输出流
+
+            fileInputStream = new FileInputStream(new File("./IO/test.txt"));
+            fileOutputStream = new FileOutputStream(new File("./IO/test2.txt"));
+
+            int hasRead;
+            byte[] fileArray = new byte[1024];
+            byte[] b = new byte[]{1,2,3,4,5,6,7,8,9,10,11};
+            while ((hasRead = fileInputStream.read(fileArray)) > 0) {
+                //System.out.println(new String(fileArray, 0, hasRead));
+                System.out.println(new String(b));
             }
+
+            String a = "abc123";
+
+            fileOutputStream.write(b);//没有缓冲区，不需要flush   字节流默认不使用缓冲区
+
+
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("创建单个文件" + destFileName + "失败！" + e.getMessage());
-            return false;
+        }
+
+    }
+
+    //文件 字符流  fileReader      为什么汉字乱码？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+    public static void test02() throws FileNotFoundException {
+        FileReader fileReader = null;
+        FileWriter fileWriter = null;
+        try {
+            //创建字节输入流
+            fileReader = new FileReader(new File("./IO/test.txt"));
+            fileWriter = new FileWriter(new File("./IO/test2.txt"));
+
+            int hasRead;
+            char[] fileArray = new char[1024];
+            while ((hasRead = fileReader.read(fileArray)) > 0) {
+                //System.out.println(new String(fileArray, 0, hasRead));
+                System.out.println(fileArray);
+            }
+
+            //OutputStreamWriter
+            fileWriter.write(fileArray);
+            fileWriter.flush();    //为什么这个要flush？OutputStreamWriter看  里面有个缓冲区。
+            fileWriter.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //缓存流
+    public static void test03() throws FileNotFoundException {
+        FileInputStream fileInputStream = null;
+        FileOutputStream fileOutputStream = null;
+        BufferedInputStream bufferedInputStream = null;
+        BufferedOutputStream bufferedOutputStream = null;
+        try {
+            fileInputStream = new FileInputStream(new File("./IO/test.txt"));
+            fileOutputStream = new FileOutputStream(new File("./IO/test2.txt"));
+            bufferedInputStream = new BufferedInputStream(fileInputStream);
+            bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+
+            byte[] byteArray = new byte[1024];
+            int hasRead = 0;
+
+            if ((hasRead = bufferedInputStream.read(byteArray)) > 0) ;
+
+            bufferedOutputStream.write(byteArray);
+            bufferedOutputStream.flush();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bufferedOutputStream.close();
+                //上面代码中我们使用了缓存流和文件流，但是我们只关闭了缓存流。这个需要注意一下，当我们使用处理流套接到节点流上的使用的时候，只需要关闭最上层的处理就可以了。java会自动帮我们关闭下层的节点流。
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
-	
 
-	
+
+//DataInputStream  DataOutputStream
+// 检查文件是否存在，否则创建
+    public static void checkFile(File file) {
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();// 创建多级目录
+            try {
+                file.createNewFile();// 创建文件，此处需要处理异常
+                System.out.println("创建文件成功！");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+// 明确源文件和目标文件
+    public static void test04() throws IOException {
+        myWrite();
+        myReader();
+    }
+
+
+    private static void myWrite() throws IOException {
+// TODO Auto-generated method stub
+// 创建数据输出流对象
+        File o = new File("./IO/test.txt");// 源文件
+        File t = new File("./IO/test2.txt");// 目标文件
+        checkFile(o);
+        checkFile(t);
+        FileOutputStream fos = new FileOutputStream(o);
+        DataOutputStream dos = new DataOutputStream(fos);
+// 写数据
+        dos.writeByte(10);
+        dos.writeShort(100);
+        dos.writeInt(1000);
+        dos.writeLong(10000);
+        dos.writeFloat(12.34F);
+        dos.writeDouble(12.56);
+        dos.writeChar('a');
+        dos.writeBoolean(true);
+// 释放资源
+        dos.close();
+    }
+
+
+    private static void myReader() throws IOException {
+// TODO Auto-generated method stub
+// 创建数据输入流对象
+        File o = new File("./IO/test.txt");// 源文件
+        FileInputStream fis = new FileInputStream(o);
+        DataInputStream dis = new DataInputStream(fis);
+// 读数据
+        byte b = dis.readByte();
+        short s = dis.readShort();
+        int i = dis.readInt();
+        long l = dis.readLong();
+        float f = dis.readFloat();
+        double d = dis.readDouble();
+        char c = dis.readChar();
+        boolean bl = dis.readBoolean();
+// 释放资源
+        dis.close();
+        System.out.println(b);
+        System.out.println(s);
+        System.out.println(i);
+        System.out.println(l);
+        System.out.println(f);
+        System.out.println(d);
+        System.out.println(c);
+        System.out.println(bl);
+    }
+
+
+//转换流
+
+    //使用输入字节流的转换流指定码表进行读取文件数据      显示中文字符很方便
+    public static void readTest2() throws IOException{
+        File file = new File("./IO/test.txt");
+        FileInputStream fileInputStream = new FileInputStream(file);
+        //创建字节流的转换流并且指定码表进行读取
+        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream,"utf-8");
+        char[] buf = new char[1024];
+        int length = 0;
+        while((length = inputStreamReader.read(buf))!=-1){
+            System.out.println(new String(buf,0,length));
+        }
+    }
+
+    //使用输出字节流的转换流指定码表写出数据
+    public static void writeTest2() throws IOException{
+        File file = new File("./IO/test2.txt");
+        //建立数据的输出通道
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        //把输出字节流转换成字符流并且指定编码表。
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, "utf-8");
+        outputStreamWriter.write("新中国好啊");
+        //关闭资源
+        outputStreamWriter.close();
+    }
+
+    //读标准输入，放入转换流
+    public static void readTest() throws IOException{
+        InputStream in = System.in; //获取了标准的输入流。
+//      System.out.println("读到 的字符："+ (char)in.read());  //read()一次只能读取一个字节。
+        //需要把字节流转换成字符流。
+        InputStreamReader inputStreamReader = new InputStreamReader(in);
+        //使用字符流的缓冲类
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+        String line = null;
+        while((line = bufferedReader.readLine())!=null){
+            System.out.println("内容："+ line);
+        }
+    }
+
+
+
+    //对象流  序列化
+
+    /**
+     * <p>ClassName: TestObjSerializeAndDeserialize<p>
+     * <p>Description: 测试对象的序列化和反序列<p>
+     * @author xudp
+     * @version 1.0 V
+     * @createTime 2014-6-9 下午03:17:25
+     */
+
+
+        public static void testSerialize() throws Exception {
+
+            Person person = new Person();
+            person.setName("linchong");
+            person.setAge(25);
+            person.setSex("男");
+            item itemA = new item("pen");
+            person.itemA= itemA;
+
+
+
+            SerializePerson(person);//序列化Person对象
+            Person p = DeserializePerson();//反序列Perons对象
+
+            System.out.println("personitem"+person.itemA.hashCode());
+            System.out.println("pitem"+p.itemA.hashCode());
+
+            System.out.println("person"+person.hashCode());
+            System.out.println("p"+p.hashCode());
+
+
+            System.out.println(MessageFormat.format("name={0},age={1},sex={2}", p.getName(), p.getAge(), p.getSex()));
+        }
+
+        /**
+         * MethodName: SerializePerson
+         * Description: 序列化Person对象
+         * @author xudp
+         * @throws FileNotFoundException
+         * @throws IOException
+         */
+        private static void SerializePerson(Person person) throws FileNotFoundException, IOException {
+
+            // ObjectOutputStream 对象输出流，将Person对象存储到E盘的Person.txt文件中，完成对Person对象的序列化操作
+            ObjectOutputStream oo = new ObjectOutputStream(new FileOutputStream(new File("./IO/Person.txt")));
+            oo.writeObject(person);
+            System.out.println("Person对象序列化成功！");
+            oo.close();
+        }
+
+        /**
+         * MethodName: DeserializePerson
+         * Description: 反序列Perons对象
+         * @author xudp
+         * @return
+         * @throws Exception
+         * @throws IOException
+         */
+        private static Person DeserializePerson() throws Exception, IOException {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
+                    new File("./IO/Person.txt")));
+            Person person = (Person) ois.readObject();
+            System.out.println("Person对象反序列化成功！");
+            return person;
+        }
+
+
+}
+
+
+
+
+
+
+/**
+ * <p>ClassName: Person<p>
+ * <p>Description:测试对象序列化和反序列化<p>
+ * @author xudp
+ * @version 1.0 V
+ * @createTime 2014-6-9 下午02:33:25
+ */
+ class Person implements Serializable {
+
+    /**
+     * 序列化ID
+     */
+    private static final long serialVersionUID = -5809782578272943999L;
+
+
+    private int age;
+    private String name;
+    private String sex;
+    private int neverUse;
+    public item itemA;
+
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+
+}
+
+
+class item implements Serializable{
+    private String name;
+    public item(String a){
+        this.name =a ;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
 }

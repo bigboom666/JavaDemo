@@ -58,18 +58,21 @@ class Tank extends JPanel implements KeyListener, Runnable{
     private Image image3;
     // 定义炸弹爆炸的集合
     private Vector<Bomb> bombs = new Vector<Bomb>();
+
+    //构造函数  初始化
     public Tank(){
         // 初始化的时候创建敌人的坦克, 以及我的坦克
         myTank = new MyTank(100, 100);
+
         for (int i=0; i < enemyNumber; i++){
             // 创建敌人坦克，并设置其初始位置, 设置颜色, 设置方向
             EneMyTank eTanks = new EneMyTank((i+1)*50, 0);
             eTanks.setColor(0);
-            eTanks.setDirect(2);
+            eTanks.setDirect(0);
             // 每个敌人坦克就是一个线程
             Thread t = new Thread(eTanks);
             t.start();
-            // 获取到每一辆敌人坦克的信息
+            // 获取到每一辆敌人坦克的信息         ++++++++++++++++++++++什么意思存疑？？？？？ 看allTank怎么用---判断是否碰到别的坦克
             eTanks.setAllTank(eneMyTank);
             // 创建坦克后给坦克添加子弹
             Shot fire = new Shot(eTanks.getX() + 10, eTanks.getY() + 30, eTanks.getDirect());
@@ -93,6 +96,9 @@ class Tank extends JPanel implements KeyListener, Runnable{
 //        image2 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/TankGame/bomb_2.gif"));
 //        image3 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/TankGame/bomb_3.gif"));
     }
+
+
+
     // paint 不需要显式的调用，系统会自动调用
     public void paint(Graphics graphics){
         super.paint(graphics);
@@ -281,10 +287,10 @@ class Tank extends JPanel implements KeyListener, Runnable{
             this.myTank.moveDown();
         }else if (e.getKeyCode() == KeyEvent.VK_A){
             this.myTank.setDirect(1);
-            this.myTank.moveRight();
+            this.myTank.moveLeft();
         }else if (e.getKeyCode() == KeyEvent.VK_D){
             this.myTank.setDirect(3);
-            this.myTank.moveLeft();
+            this.myTank.moveRight();
 
         }
         // 判断 j 键是否被按下，如果按下则发射子弹
