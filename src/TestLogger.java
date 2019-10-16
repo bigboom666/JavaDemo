@@ -14,11 +14,8 @@ public class TestLogger {
 		log2.info("111");
 		log2.severe("222");
 		log2.warning("333");
-		
-		
+
 		log2.setLevel(Level.ALL);
-
-
 		
 		log2.severe("—œ÷ÿ");
 		log2.warning("æØ∏Ê");

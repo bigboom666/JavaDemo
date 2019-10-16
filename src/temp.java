@@ -1,22 +1,41 @@
-import java.util.ArrayList;
+class Task implements Runnable {
 
-class Test4 {
-  public static void main(String[] args) {
-    ArrayList<String> arrayList1=new ArrayList<String>();
-    arrayList1.add("abc");
-    ArrayList<Integer> arrayList2=new ArrayList<Integer>();
-    arrayList2.add(123);
-    System.out.println(arrayList1.getClass());
-    System.out.println(arrayList1.getClass()==arrayList2.getClass());
-  }
+    public void run() {
+
+        synchronized (Task.class) {
+
+            for (int x = 0; x < 10; x++)
+
+                System.out.println(Thread.currentThread().getName() + "---" + x);
+
+        }
+
+    }
+
 }
-//class java.util.ArrayList
-//true
 
 
-public class Test2<T> {
-  public static T one;   //编译错误
-  public static  T show(T one){ //编译错误
-    return null;
-  }
+class temp {
+
+    public static void main(String[] args) throws InterruptedException {
+
+        synchronized (Task.class) {
+
+            Task t = new Task();
+
+            Thread t0 = new Thread(t);
+
+            t0.start();
+
+            t0.join();
+
+            for (int x = 0; x < 10; x++)
+
+                System.out.println(Thread.currentThread().getName() + "---" + x);
+
+        }
+
+    }
+
 }
+
