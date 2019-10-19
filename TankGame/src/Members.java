@@ -12,13 +12,13 @@ import java.util.logging.Logger;
  */
 // 坦克的基类,主要有以下属性, 坦克的x 轴 y 轴 坐标 坦克的方向
 class Tanks {
-    // 定义坦克的横坐标， 纵坐标
-    int x = 0;
-    int y = 0;
+    // 定义坦克的横坐标， 纵坐标  子类可用
+    private int x = 0;
+    private int y = 0;
     boolean isLive = true;
 
-    final int width = 20;
-    final int length = 30;
+    public final int width = 20;
+    public final int length = 30;
     //int isTouch = -1;
 
     // 坦克的方向 0 表示向上 1 表示向右 2 表示 下 3 表示左
@@ -189,12 +189,12 @@ class EneMyTank extends Tanks implements Runnable {
 
     private void moveUp() {
         for (int i = 0; i < 15; i++) {
-            if (y > 0) {
+            if (getY() > 0) {
                 if (this.isTouchOther() == 0) {                      //重叠后方向反向
                     //this.setDirect(2);
                     break;
                 } else {
-                    y -= speed;
+                    setY(getY()-getSpeed());
                 }
             }
 
@@ -205,7 +205,7 @@ class EneMyTank extends Tanks implements Runnable {
                 e.printStackTrace();
             }
         }
-        y += speed;
+        setY(getY()+getSpeed());
     }
 
 
@@ -217,12 +217,12 @@ class EneMyTank extends Tanks implements Runnable {
                          //   System.out.println(Thread.currentThread().getName()+"Right");
                         }*/
 
-            if (x < 365) {
+            if (getX() < 365) {
                 if (this.isTouchOther() == 1) {                      //重叠后方向反向
                     //this.setDirect(3);
                     break;
                 } else {
-                    x += speed;
+                    setX(getX()+getSpeed());
                 }
             }
 
@@ -232,7 +232,7 @@ class EneMyTank extends Tanks implements Runnable {
                 e.printStackTrace();
             }
         }
-        x -= speed;
+        setX(getX()-getSpeed());
     }
 
 
@@ -243,12 +243,12 @@ class EneMyTank extends Tanks implements Runnable {
                           //  System.out.println(Thread.currentThread().getName()+"Down");
                         }*/
 
-            if (y < 245) {
+            if (getY() < 245) {
                 if (this.isTouchOther() == 2) {                      //重叠后方向反向
                     //this.setDirect(0);
                     break;
                 } else {
-                    y += speed;
+                    setY(getY()+getSpeed());
                 }
             }
 
@@ -258,7 +258,7 @@ class EneMyTank extends Tanks implements Runnable {
                 e.printStackTrace();
             }
         }
-        y -= speed;
+        setY(getY()-getSpeed());
     }
 
     private void moveLeft() {
@@ -268,12 +268,12 @@ class EneMyTank extends Tanks implements Runnable {
                            // System.out.println(Thread.currentThread().getName()+"Left");
                         }*/
 
-            if (x > 0) {
+            if (getX() > 0) {
                 if (this.isTouchOther() == 3) {                      //重叠后方向反向  解bug
                     //this.setDirect(1);
                     break;
                 } else {
-                    x -= speed;
+                    setX(getX()-getSpeed());
                 }
             }
 
@@ -283,7 +283,7 @@ class EneMyTank extends Tanks implements Runnable {
                 e.printStackTrace();
             }
         }
-        x += speed;    //bug消除大法
+        setX(getX()+getSpeed());    //bug消除大法
     }
 
 
@@ -358,25 +358,25 @@ class MyTank extends Tanks {
 
             case 0:
                 // 子弹向上
-                shot = new Shot(x + 10, y, 0);   //为什么x+10???+++++++++++++
+                shot = new Shot(getX() + 10, getY(), 0);   //为什么x+10???+++++++++++++
                 // 将子弹放到集合中
                 shots.add(shot);
                 break;
             case 1:
                 // 子弹向右
-                shot = new Shot(x + 30, y + 10, 1);
+                shot = new Shot(getX() + 30, getY() + 10, 1);
                 // 将子弹放到集合中
                 shots.add(shot);
                 break;
             case 2:
                 // 子弹向下
-                shot = new Shot(x + 10, y + 30, 2);
+                shot = new Shot(getX() + 10, getY() + 30, 2);
                 // 将子弹放到集合中
                 shots.add(shot);
                 break;
             case 3:
                 // 子弹向左
-                shot = new Shot(x, y + 10, 3);
+                shot = new Shot(getX(), getY() + 10, 3);
                 // 将子弹放到集合中
                 shots.add(shot);
                 break;
@@ -390,8 +390,9 @@ class MyTank extends Tanks {
 
     // 控制坦克向上移动, 向上移动, 应该是 y 轴 的值 减小
     public void moveUp() {
-        if ((this.y >= 0) && (this.isTouchOther() != 0)) {
+        if ((this.getY() >= 0) && (this.isTouchOther() != 0)) {
             this.y -= this.speed;
+            setY(getY());
             //System.out.println("isTouch:\t" + this.isTouchOther() + "\tx:\t" + this.x + ",y:\t" + this.y);
         }          //自己坦克可以出界bug
         //System.out.println("x:\t"+this.x+",y:\t"+this.y);
